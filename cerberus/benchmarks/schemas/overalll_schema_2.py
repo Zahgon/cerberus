@@ -6,23 +6,23 @@ T_TYPES = ['NO', 'V20']
 
 
 def to_bool(value):
-    return value.lower() in ('true', '1')
+    pass
 
 
 def allowed_tax(value):
-    return value if value.upper() in T_TYPES else 'NO'
+    pass
 
 
 def allowed_types(value):
-    return value if value.upper() in P_TYPES else 'ONE'
+    pass
 
 
 def none_to_zero(value):
-    return 0 if value in (None, "") else value
+    pass
 
 
 def empty_str_to_null(value):
-    return None if value == '' else value
+    pass
 
 
 product_schema = {

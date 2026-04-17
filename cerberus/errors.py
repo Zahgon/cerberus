@@ -150,7 +150,7 @@ class ValidationError(object):
         """
         A list that contains the individual errors of a bulk validation error.
         """
-        return self.info[0] if self.is_group_error else None
+        pass
 
     @property
     def definitions_errors(self):
@@ -158,39 +158,29 @@ class ValidationError(object):
         Dictionary with errors of an \\*of-rule mapped to the index of the definition it
         occurred in. Returns :obj:`None` if not applicable.
         """
-        if not self.is_logic_error:
-            return None
-
-        result = defaultdict(list)
-        for error in self.child_errors:
-            i = error.schema_path[len(self.schema_path)]
-            result[i].append(error)
-        return result
+        pass
 
     @property
     def field(self):
         """Field of the contextual mapping, possibly :obj:`None`."""
-        if self.document_path:
-            return self.document_path[-1]
-        else:
-            return None
+        pass
 
     @property
     def is_group_error(self):
         """``True`` for errors of bulk validations."""
-        return bool(self.code & ERROR_GROUP.code)
+        pass
 
     @property
     def is_logic_error(self):
         """
         ``True`` for validation errors against different schemas with \\*of-rules.
         """
-        return bool(self.code & LOGICAL.code - ERROR_GROUP.code)
+        pass
 
     @property
     def is_normalization_error(self):
         """``True`` for normalization errors."""
-        return bool(self.code & NORMALIZATION.code)
+        pass
 
 
 class ErrorList(list):
@@ -252,11 +242,11 @@ class ErrorTreeNode(MutableMapping):
 
     @property
     def depth(self):
-        return len(self.path)
+        pass
 
     @property
     def tree_type(self):
-        return self.tree_root.tree_type
+        pass
 
     def add(self, error):
         error_path = self._path_of_(error)
@@ -440,24 +430,7 @@ def encode_unicode(f):
     This decorator ensures that if legacy Python is used unicode
     strings are encoded before passing to a function.
     """
-
-    @wraps(f)
-    def wrapped(obj, error):
-        def _encode(value):
-            """Helper encoding unicode strings into binary utf-8"""
-            if isinstance(value, unicode):  # noqa: F821
-                return value.encode('utf-8')
-            return value
-
-        error = copy(error)
-        error.document_path = _encode(error.document_path)
-        error.schema_path = _encode(error.schema_path)
-        error.constraint = _encode(error.constraint)
-        error.value = _encode(error.value)
-        error.info = _encode(error.info)
-        return f(obj, error)
-
-    return wrapped if sys.version_info < (3,) else f
+    pass
 
 
 class BasicErrorHandler(BaseErrorHandler):
@@ -518,10 +491,7 @@ class BasicErrorHandler(BaseErrorHandler):
 
     @property
     def pretty_tree(self):
-        pretty = deepcopy(self.tree)
-        for field in pretty:
-            self._purge_empty_dicts(pretty[field])
-        return pretty
+        pass
 
     @encode_unicode
     def add(self, error):
@@ -608,12 +578,7 @@ class BasicErrorHandler(BaseErrorHandler):
                     )
 
     def _purge_empty_dicts(self, error_list):
-        subtree = error_list[-1]
-        if not error_list[-1]:
-            error_list.pop()
-        else:
-            for key in subtree:
-                self._purge_empty_dicts(subtree[key])
+        pass
 
     def _rewrite_error_path(self, error, offset=0):
         """

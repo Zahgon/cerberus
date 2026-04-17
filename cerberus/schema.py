@@ -247,7 +247,7 @@ class DefinitionSchema(MutableMapping):
         return schema
 
     def regenerate_validation_schema(self):
-        self.validation_schema = SchemaValidationSchema(self.validator)
+        pass
 
     def validate(self, schema=None):
         """
@@ -321,150 +321,48 @@ class SchemaValidatorMixin(object):
     @property
     def known_rules_set_refs(self):
         """The encountered references to rules set registry items."""
-        return self._config['known_rules_set_refs']
+        pass
 
     @property
     def known_schema_refs(self):
         """The encountered references to schema registry items."""
-        return self._config['known_schema_refs']
+        pass
 
     @property
     def target_schema(self):
         """The schema that is being validated."""
-        return self._config['target_schema']
+        pass
 
     @property
     def target_validator(self):
         """The validator whose schema is being validated."""
-        return self._config['target_validator']
+        pass
 
     def _check_with_bulk_schema(self, field, value):
         # resolve schema registry reference
-        if isinstance(value, _str_type):
-            if value in self.known_rules_set_refs:
-                return
-            else:
-                self.known_rules_set_refs.add(value)
-            definition = self.target_validator.rules_set_registry.get(value)
-            if definition is None:
-                self._error(field, 'Rules set definition %s not found.' % value)
-                return
-            else:
-                value = definition
-
-        _hash = (
-            mapping_hash({'turing': value}),
-            mapping_hash(self.target_validator.types_mapping),
-        )
-        if _hash in self.target_validator._valid_schemas:
-            return
-
-        validator = self._get_child_validator(
-            document_crumb=field,
-            allow_unknown=False,
-            schema=self.target_validator.rules,
-        )
-        validator(value, normalize=False)
-        if validator._errors:
-            self._error(validator._errors)
-        else:
-            self.target_validator._valid_schemas.add(_hash)
+        pass
 
     def _check_with_dependencies(self, field, value):
-        if isinstance(value, _str_type):
-            pass
-        elif isinstance(value, Mapping):
-            validator = self._get_child_validator(
-                document_crumb=field,
-                schema={'valuesrules': {'type': 'list'}},
-                allow_unknown=True,
-            )
-            if not validator(value, normalize=False):
-                self._error(validator._errors)
-        elif isinstance(value, Sequence):
-            if not all(isinstance(x, Hashable) for x in value):
-                path = self.document_path + (field,)
-                self._error(path, 'All dependencies must be a hashable type.')
+        pass
 
     def _check_with_items(self, field, value):
-        for i, schema in enumerate(value):
-            self._check_with_bulk_schema((field, i), schema)
+        pass
 
     def _check_with_schema(self, field, value):
-        try:
-            value = self._handle_schema_reference_for_validator(field, value)
-        except _Abort:
-            return
-
-        _hash = (mapping_hash(value), mapping_hash(self.target_validator.types_mapping))
-        if _hash in self.target_validator._valid_schemas:
-            return
-
-        validator = self._get_child_validator(
-            document_crumb=field, schema=None, allow_unknown=self.root_allow_unknown
-        )
-        validator(self._expand_rules_set_refs(value), normalize=False)
-        if validator._errors:
-            self._error(validator._errors)
-        else:
-            self.target_validator._valid_schemas.add(_hash)
+        pass
 
     def _check_with_type(self, field, value):
-        value = set((value,)) if isinstance(value, _str_type) else set(value)
-        invalid_constraints = value - set(self.target_validator.types)
-        if invalid_constraints:
-            self._error(
-                field, 'Unsupported types: {}'.format(', '.join(invalid_constraints))
-            )
+        pass
 
     def _expand_rules_set_refs(self, schema):
-        result = {}
-        for k, v in schema.items():
-            if isinstance(v, _str_type):
-                result[k] = self.target_validator.rules_set_registry.get(v)
-            else:
-                result[k] = v
-        return result
+        pass
 
     def _handle_schema_reference_for_validator(self, field, value):
-        if not isinstance(value, _str_type):
-            return value
-        if value in self.known_schema_refs:
-            raise _Abort
-
-        self.known_schema_refs.add(value)
-        definition = self.target_validator.schema_registry.get(value)
-        if definition is None:
-            path = self.document_path + (field,)
-            self._error(path, 'Schema definition {} not found.'.format(value))
-            raise _Abort
-        return definition
+        pass
 
     def _validate_logical(self, rule, field, value):
         """{'allowed': ('allof', 'anyof', 'noneof', 'oneof')}"""
-        if not isinstance(value, Sequence):
-            self._error(field, errors.BAD_TYPE)
-            return
-
-        validator = self._get_child_validator(
-            document_crumb=rule,
-            allow_unknown=False,
-            schema=self.target_validator.validation_rules,
-        )
-
-        for constraints in value:
-            _hash = (
-                mapping_hash({'turing': constraints}),
-                mapping_hash(self.target_validator.types_mapping),
-            )
-            if _hash in self.target_validator._valid_schemas:
-                continue
-
-            validator(constraints, normalize=False)
-            if validator._errors:
-                self._error(validator._errors)
-            else:
-                self.target_validator._valid_schemas.add(_hash)
+        pass
 
 
 ####
@@ -500,7 +398,7 @@ class Registry(object):
         """
         Returns a :class:`dict` with all registered definitions mapped to their name.
         """
-        return self._storage
+        pass
 
     def clear(self):
         """Purge all definitions in the registry."""
